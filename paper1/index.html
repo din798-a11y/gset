@@ -6,12 +6,20 @@
 <meta name="description" content="GSET Paper I — Teaching & Research Aptitude. 10,578 MCQs with instant answer checking, mock tests and progress tracking. Authors: Prin. Dr R. N. Desai, Dr J. K. Patel, Dr D. N. Patel.">
 <link rel="preload" href="bank.json" as="fetch" crossorigin="anonymous">
 <link rel="preload" href="theory.json" as="fetch" crossorigin="anonymous">
+<link rel="preload" href="fonts/ngs400.woff2" as="font" type="font/woff2" crossorigin="anonymous">
+<link rel="preload" href="fonts/ngs700.woff2" as="font" type="font/woff2" crossorigin="anonymous">
 <meta name="theme-color" content="#13306b">
 <title>GSET Paper I Question Bank</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700;800&family=Source+Sans+3:wght@400;500;600;700;800&family=Noto+Serif+Gujarati:wght@600;700;800&family=Noto+Sans+Gujarati:wght@400;500;600;700;800&display=swap" rel="stylesheet" media="print" onload="this.media='all'">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700;800&family=Source+Sans+3:wght@400;500;600;700;800&display=swap" rel="stylesheet" media="print" onload="this.media='all'">
 <style>
+@font-face{font-family:'Noto Sans Gujarati';font-style:normal;font-weight:400 500;font-display:swap;src:url(fonts/ngs400.woff2) format('woff2');unicode-range:U+0951-0952,U+0964-0965,U+0A80-0AFF,U+200C-200D,U+20B9,U+25CC,U+A830-A839}
+@font-face{font-family:'Noto Sans Gujarati';font-style:normal;font-weight:600;font-display:swap;src:url(fonts/ngs600.woff2) format('woff2');unicode-range:U+0951-0952,U+0964-0965,U+0A80-0AFF,U+200C-200D,U+20B9,U+25CC,U+A830-A839}
+@font-face{font-family:'Noto Sans Gujarati';font-style:normal;font-weight:700;font-display:swap;src:url(fonts/ngs700.woff2) format('woff2');unicode-range:U+0951-0952,U+0964-0965,U+0A80-0AFF,U+200C-200D,U+20B9,U+25CC,U+A830-A839}
+@font-face{font-family:'Noto Sans Gujarati';font-style:normal;font-weight:800 900;font-display:swap;src:url(fonts/ngs800.woff2) format('woff2');unicode-range:U+0951-0952,U+0964-0965,U+0A80-0AFF,U+200C-200D,U+20B9,U+25CC,U+A830-A839}
+@font-face{font-family:'Noto Serif Gujarati';font-style:normal;font-weight:600 700;font-display:swap;src:url(fonts/ngse700.woff2) format('woff2');unicode-range:U+0951-0952,U+0964-0965,U+0A80-0AFF,U+200C-200D,U+20B9,U+25CC,U+A830-A839}
+@font-face{font-family:'Noto Serif Gujarati';font-style:normal;font-weight:800 900;font-display:swap;src:url(fonts/ngse800.woff2) format('woff2');unicode-range:U+0951-0952,U+0964-0965,U+0A80-0AFF,U+200C-200D,U+20B9,U+25CC,U+A830-A839}
 :root{
   --bg:#f5f2ea;--paper:#ffffff;--paper2:#fbf9f4;--line:#e3ddcf;--line2:#d4ccb9;
   --ink:#1a2340;--ink2:#2e3a5c;--muted:#5d667c;--dim:#8a91a3;
@@ -578,6 +586,11 @@ mark{background:#f6e3b0;color:inherit;border-radius:3px;padding:0 2px}
 #boot.on{display:flex}
 #boot .sp{width:54px;height:54px;border-radius:50%;border:5px solid #e3ddcf;border-top-color:var(--navy);border-right-color:var(--gold2);animation:spin .9s linear infinite}
 
+
+/* ===== Gujarati shaping safety: letter-spacing breaks joint letters (conjuncts) ===== */
+body.gu *{letter-spacing:normal!important}
+.qtext,.opt,.chip.t,.unit h4,.tcard h5,.th-body,.ts h2,.toc,.tchips,.explain,.verdict,.ulist,.th-top .tt,.uhead b,.acard li,.la .tx .i,#pTitle,#pSub,#bTitle{letter-spacing:normal!important}
+body,button,input,select,textarea{font-kerning:normal;text-rendering:optimizeLegibility;font-feature-settings:normal}
 /* ---------- responsive ---------- */
 @media (max-width:1080px){
   .nav{display:none}
