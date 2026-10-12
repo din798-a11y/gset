@@ -127,6 +127,7 @@ body.gu .st .l{letter-spacing:0;font-size:.92em}
 .lbtn{width:100%;justify-content:center;padding:.95em;font-size:1.08em!important}
 .lbtn .spin{width:1.1em;height:1.1em;border-radius:50%;border:2.5px solid rgba(255,255,255,.4);border-top-color:#fff;animation:spin .7s linear infinite;display:none}
 .lbtn.busy .spin{display:inline-block}
+.lload{text-align:center;font-size:.88em;color:var(--navy2);margin-top:.6em;font-weight:600;animation:blink 1.4s infinite}
 .lerr{min-height:1.5em;text-align:center;font-size:.92em;color:var(--bad);margin-top:.7em;font-weight:600}
 .lc.shake{animation:shake .5s}
 .lc .lfoot{text-align:center;font-size:.8em;color:var(--dim);border-top:1px dashed var(--line);padding-top:.8em;margin-top:.4em}
@@ -499,13 +500,14 @@ mark{background:#f6e3b0;color:inherit;border-radius:3px;padding:0 2px}
       <div class="lcw"><div class="lc" id="lc">
         <div id="lform">
           <div class="lock" id="lock">🔒</div>
-          <h3 data-i="welcome"></h3>
+          <h3 data-i="welcome">Welcome</h3>
           <div class="msg" data-i="signin_msg"></div>
-          <form id="loginForm" autocomplete="off">
-            <div class="inp"><span class="ico">👤</span><input id="lu" placeholder=" " autocomplete="username" autocapitalize="characters" spellcheck="false"><label for="lu" data-i="username"></label></div>
-            <div class="inp"><span class="ico">🔑</span><input id="lp" type="password" placeholder=" " autocomplete="current-password"><label for="lp" data-i="password"></label><button type="button" class="eye" id="eye">👁️</button></div>
+          <form id="loginForm" autocomplete="off" onsubmit="return false" action="javascript:void(0)">
+            <div class="inp"><span class="ico">👤</span><input id="lu" placeholder=" " autocomplete="username" autocapitalize="characters" spellcheck="false"><label for="lu" data-i="username">Username</label></div>
+            <div class="inp"><span class="ico">🔑</span><input id="lp" type="password" placeholder=" " autocomplete="current-password"><label for="lp" data-i="password">Password</label><button type="button" class="eye" id="eye">👁️</button></div>
             <div class="lrow"><label class="tog" style="margin:0"><span data-i="remember"></span><input type="checkbox" id="lrem"><i></i></label><span>🔐 <span data-i="secure"></span></span></div>
-            <button class="btn pri lbtn" type="submit" id="lbtn"><span class="spin"></span><span data-i="login_btn"></span></button>
+            <button class="btn pri lbtn busy" type="button" id="lbtn" disabled><span class="spin"></span><span data-i="login_btn">Login →</span></button>
+            <div class="lload" id="lload">⏳ Loading question bank… · પ્રશ્ન બેંક લોડ થઈ રહી છે…</div>
             <div class="lerr" id="lerr"></div>
           </form>
         </div>
@@ -781,20 +783,23 @@ document.querySelectorAll('[data-count]').forEach(el=>{const v=el.dataset.count;
 function startLoginAnim(){const lg=$('login');lg.classList.remove('out');lg.classList.add('on');setTimeout(()=>lg.querySelectorAll('[data-count]').forEach(n=>countUp(n,+n.dataset.count,1800)),700)}
 const AUTH_KEY='gset_p1_login';
 $('eye').onclick=()=>{const p=$('lp');p.type=p.type==='password'?'text':'password';$('eye').textContent=p.type==='password'?'👁️':'🙈'};
-$('loginForm').onsubmit=e=>{e.preventDefault();const u=$('lu').value.trim(),pw=$('lp').value,b=$('lbtn');if(b.classList.contains('busy'))return;
+function doLogin(e){e&&e.preventDefault&&e.preventDefault();if($('lbtn').disabled)return;const u=$('lu').value.trim(),pw=$('lp').value.trim(),b=$('lbtn');if(b.classList.contains('busy'))return;
  if(!u||!pw){fail('err_empty');return}
  b.classList.add('busy');$('lerr').textContent='';$('lerr').dataset.k='';
  setTimeout(()=>{b.classList.remove('busy');
   if(u.toUpperCase()==='SD'&&pw==='123'){try{$('lrem').checked?localStorage.setItem(AUTH_KEY,'1'):localStorage.removeItem(AUTH_KEY)}catch(_){}
    document.activeElement&&document.activeElement.blur();scrollTo({top:0,behavior:'smooth'});
-   const lk=$('lock');lk.textContent='🔓';lk.classList.add('ok');
+   $('lbtn').disabled=true;const lk=$('lock');lk.textContent='🔓';lk.classList.add('ok');
    setTimeout(()=>{$('lform').classList.add('gone');$('lok').classList.add('on');const w=document.querySelector('.lcw');w.scrollTop=0;w.scrollLeft=0;const r=$('lc').getBoundingClientRect();confetti(r.left+r.width/2,r.top+r.height*.3);setTimeout(()=>confetti(r.left+r.width*.25,r.top+r.height*.4),180);setTimeout(()=>confetti(r.left+r.width*.75,r.top+r.height*.4),320)},420);
    setTimeout(enterApp,2500)}
-  else fail('err_bad')},800)};
+  else fail('err_bad')},800)}
+$('loginForm').onsubmit=e=>{e.preventDefault();doLogin();return false};
+$('lbtn').addEventListener('click',doLogin);
+['lu','lp'].forEach(id=>$(id).addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();doLogin()}}));
 function fail(k){const c=$('lc');$('lerr').textContent='✗ '+t(k);$('lerr').dataset.k=k;c.classList.remove('shake');void c.offsetWidth;c.classList.add('shake');$('lp').value='';$('lp').focus({preventScroll:true});const w=document.querySelector('.lcw');w.scrollTop=0;w.scrollLeft=0}
 function enterApp(){stage=2;$('login').classList.add('out');setTimeout(()=>{$('app').classList.add('on');go('dash');movePill()},300)}
 $('logout').onclick=()=>{try{localStorage.removeItem(AUTH_KEY)}catch(_){}
- $('app').classList.remove('on');stage=-1;$('lform').classList.remove('gone');$('lok').classList.remove('on');$('lock').textContent='🔒';$('lock').classList.remove('ok');$('lu').value='';$('lp').value='';$('lerr').textContent='';$('lerr').dataset.k='';
+ $('app').classList.remove('on');stage=-1;$('lbtn').disabled=false;$('lform').classList.remove('gone');$('lok').classList.remove('on');$('lock').textContent='🔒';$('lock').classList.remove('ok');$('lu').value='';$('lp').value='';$('lerr').textContent='';$('lerr').dataset.k='';
  const lg=$('login');lg.classList.remove('on');lg.querySelectorAll('.rise').forEach(r=>{r.style.animation='none';void r.offsetWidth;r.style.animation=''});scrollTo(0,0);setTimeout(()=>{startLoginAnim();moveKnobs()},350)};
 
 /* ================= navigation ================= */
@@ -953,6 +958,7 @@ $('rReset').onclick=function(){if(this.dataset.c!=='1'){this.dataset.c='1';this.
 
 /* ================= boot ================= */
 applyLang();
+$('lbtn').disabled=false;$('lbtn').classList.remove('busy');$('lload').style.display='none';
 if(S.last&&byId.has(S.last.id)){const x=byId.get(S.last.id);$('pUnit').value=x.u;fillTopics('pUnit','pTopic');$('pTopic').value=x.u+'|'+x.t;startPractice();const k=P.list.findIndex(q=>q.id===x.id);if(k>=0)P.i=k}
 let remembered=false;try{remembered=localStorage.getItem(AUTH_KEY)==='1'}catch(e){}
 if(remembered){$('login').classList.remove('on');enterApp()}else{startLoginAnim();setTimeout(()=>{if(stage===-1&&innerWidth>900)$('lu').focus({preventScroll:true})},1300)}
